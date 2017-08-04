@@ -2,12 +2,35 @@
 <html>
 <head>
 	<title>Push Pin Tracker</title>
+	<link rel="stylesheet" type="text/css" href="lib/node_modules/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
-<body>
+<body ng-app="PushPinApp">
 
-	<!-- App entry point -->
-	<script src="app/app.js"></script>
+	<div ng-include="'partials/navbar.html'"></div>
+
+	<div ng-view></div>
+
+	<!-- third-party scripts -->
+	<script type="text/javascript" src="lib/node_modules/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="lib/node_modules/firebase/firebase.js"></script>
+
+	<!-- angular js files -->
+	<script type="text/javascript" src="lib/node_modules/angular/angular.min.js"></script>
+	<script type="text/javascript" src="lib/node_modules/angular-route/angular-route.min.js"></script>
+
+  <!-- app entry point -->
+  <script type="text/javascript" src="app/app.js"></script>
+
+  <!-- providers -->
+  <script src="app/values/fb-creds.js"></script>
+  <script src="app/factories/user-factory.js"></script>
+
+  <!-- controllers -->
+  <script src="app/controllers/nav-controller.js"></script>
+  <script src="app/controllers/user-controller.js"></script>
+  <script src="app/controllers/projects-controller.js"></script>
 
 </body>
 </html>

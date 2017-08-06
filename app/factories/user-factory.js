@@ -4,7 +4,8 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
 
   var config = {
     apiKey: FBCreds.apiKey,
-    authDomain: FBCreds.authDomain
+    authDomain: FBCreds.authDomain,
+    storageBucket: FBCreds.storageBucket
   };
 
   firebase.initializeApp(config);

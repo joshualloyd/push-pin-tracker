@@ -1,5 +1,5 @@
 <div>{{heading}}</div>
 
 <ul>
-	<li ng-repeat="project in projects"><a href="#!/project/view/{{project.id}}">{{project.name}}</a> | {{project.description}} <img class="project-thumb" ng-src="{{project.imageUrl}}"><a href="#!/project/edit/{{project.id}}"><button>Edit</button></a></li>
+	<li ng-repeat="project in projects"><a href="#!/project/view/{{project.id}}">{{project.name}}</a> | {{project.description}} <img class="project-thumb" ng-src="{{project.imageUrl}}"><a href="#!/project/edit/{{project.id}}"><button>Edit</button></a><a href="#!/project/manage/{{project.id}}"><button>Manage</button></a><button>Delete</button></li>
 </ul>

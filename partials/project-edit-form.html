@@ -10,7 +10,8 @@
 
 <div>
 	<label>Project Image:</label>
-	<!-- <input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file"> -->
+	<img src="{{project.imageUrl}}">
+	<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
 </div>
 
-<button ng-click="editProject()">Create Project</button>
+<button ng-click="editProject()">Update Project</button>

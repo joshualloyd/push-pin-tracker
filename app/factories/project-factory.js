@@ -93,10 +93,11 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
-	let editProject = (projectObj) => {
+	let editProject = (projectObj, projectId) => {
+		console.log('project data to be updated', projectObj);
 		return $q((resolve, reject) => {
-			if (projectObj.id) {
-				$http.put(`${FirebaseUrl}projects/${projectObj.id}.json`,
+			if (projectObj && projectId) {
+				$http.put(`${FirebaseUrl}projects/${projectId}.json`,
 					angular.toJson(projectObj))
 				.then((editedProjectData) => {
 					resolve(editedProjectData);
@@ -104,6 +105,8 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 				.catch((err) => {
 					reject(err);
 				});
+			} else {
+				console.log('need a projectObj and projectId', projectObj , projectId);
 			}
 		});
 	};

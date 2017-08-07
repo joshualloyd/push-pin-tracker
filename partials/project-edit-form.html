@@ -1,0 +1,17 @@
+<div>
+	<label>Project Name:</label>
+	<input type="text" placeholder="The name of your new project" id="project-name" ng-model="project.name">
+</div>
+
+<div>
+	<label>Project Description:</label>
+	<input type="text" placeholder="This takes text for now" id="image-name" ng-model="project.description">
+</div>
+
+<div>
+	<label>Project Image:</label>
+	<img src="{{project.imageUrl}}">
+	<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
+</div>
+
+<button ng-click="editProject()">Update Project</button>

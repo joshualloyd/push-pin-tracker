@@ -3,11 +3,12 @@
 		<div class="pin-list col-md-4">
 			<h2>Pins</h2>
 			<ul>
-				<!-- <li ng-model="pin in pins">{{pin.title}}</li> -->
+				<li ng-repeat="pin in pins">X Coordinate: {{pin.xCoord}} | Y Coordinate: {{pin.yCoord}}</li>
 			</ul>
 		</div>
 		<div class="pin-img-container col-md-8">
 			<img class="pin-img" src="{{project.imageUrl}}" ng-click="addPin($event)">
+			<img class="pin-icon" src="images/pin.svg" ng-repeat="pin in pins" style="left:{{pin.xCoord}}px;top:{{pin.yCoord}}px;">
 		</div>
 	</div>
 </div>

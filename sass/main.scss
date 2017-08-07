@@ -8,6 +8,16 @@
 	max-height: 50px;
 }
 
+.pin-img-container {
+	position: relative;
+}
+
 .pin-img {
 	width: 500px;
+	position: absolute;
+}
+
+.pin-icon {
+	height: 20px;
+	position: absolute;
 }

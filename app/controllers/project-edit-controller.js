@@ -1,6 +1,6 @@
 'use strict';
 
-// console.log('is this project edit controller even loading?');
+console.log('is this project edit controller even loading?');
 
 pushPinApp.controller('ProjectEditController', function($scope, $window, $routeParams, ProjectFactory) {
 

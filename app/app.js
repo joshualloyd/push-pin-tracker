@@ -22,6 +22,11 @@ pushPinApp.config( ($routeProvider) => {
     templateUrl: 'partials/login.html',
     controller: 'UserController'
   })
+  .when('project/edit/:projectId', {
+    templateUrl: 'partials/project-edit-form.html',
+    controller: 'ProjectEditController',
+    resolve: {isAuth}
+  })
   .when('/projects/view', {
     templateUrl: 'partials/projects-list.html',
     controller: 'ProjectsListController',
@@ -33,13 +38,8 @@ pushPinApp.config( ($routeProvider) => {
     resolve: {isAuth}
   })
   .when('/project/new', {
-  	templateUrl: 'partials/project-new-form.html',
-  	controller: 'ProjectAddController',
-  	resolve: {isAuth}
-  })
-  .when('project/edit/:projectId', {
-    templateUrl: 'partials/project-edit-form.html',
-    controller: 'ProjectEditController',
+    templateUrl: 'partials/project-new-form.html',
+    controller: 'ProjectAddController',
     resolve: {isAuth}
   })
   .otherwise('/');

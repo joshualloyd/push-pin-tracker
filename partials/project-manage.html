@@ -1,0 +1,33 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="pin-list col-md-4">
+			<h2>Pins</h2>
+			<label for="manage-pins">Add Pins</label>
+			<input type="radio" id="manage-pins" ng-model="manager" value="pins">
+			<label for="manage-comments">Add Comments</label>
+			<input type="radio" id="manage-comments" ng-model="manager" value="comments">
+			<div class="pins-section" ng-show="manager == 'pins'">
+				<ul>
+					<li ng-repeat="pin in pins">X Coordinate: {{pin.xCoord}} | Y Coordinate: {{pin.yCoord}}</li>
+				</ul>
+			</div>
+			<div class="comments-section" ng-show="manager == 'comments'">
+				<div ng-show="!selectedPin">
+					<h2>Please click a Pin</h2>
+				</div>
+				<div ng-show="selectedPin">
+					<label>Add a Comment to the Pin:</label>
+					<input type="text" ng-model="newComment.description">
+					<button ng-click="addComment()">Add</button>
+					<ul>
+						<li ng-repeat="comment in comments | filter: {pin_id:selectedPin}">Comment: {{comment.description}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="pin-img-container col-md-8">
+			<img class="pin-img" src="{{project.imageUrl}}" ng-click="addPin($event)">
+			<img class="pin-icon" ng-src="{{pin.id === selectedPin && 'images/pin-white.svg' || 'images/pin.svg'}}" ng-repeat="pin in pins" ng-click="selectPin(pin.id)" style="left:{{pin.xCoord}}px;top:{{pin.yCoord}}px;">
+		</div>
+	</div>
+</div>

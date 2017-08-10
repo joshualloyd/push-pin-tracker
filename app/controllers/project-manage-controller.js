@@ -48,14 +48,15 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		if ($scope.manager === 'pins') {
 			$scope.pin.xCoord = clickEvent.offsetX;
 			$scope.pin.yCoord = clickEvent.offsetY;
+			$scope.pin.name = $scope.newPin.name;
 
 			PinFactory.createPin($scope.pin)
 			.then((dataFromAddPin) => {
 				console.log("new pin data", dataFromAddPin);
-				// $window.location.href = `#!/project/manage/${$routeParams.projectId}`;
+				$scope.newPin.name = '';
 				fetchPins();
 			})
-			.catch((err)=>{
+			.catch((err) => {
 				console.log('there was an issue with the addPin factory method', err);
 			});
 		}
@@ -76,10 +77,37 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		CommentFactory.createComment($scope.newComment)
 		.then((dataFromAddComment) => {
 			console.log('new comment data', dataFromAddComment);
+			$scope.newComment.description = '';
 			fetchComments();
 		})
 		.catch((err) => {
 			console.log('there was an issue with the addComment factory method', err);
+		});
+	};
+
+	$scope.deleteComment = (commentId) => {
+		console.log('commentId', commentId);
+		CommentFactory.deleteComment(commentId)
+		.then((dataFromDeleteComment) => {
+			console.log('a comment was deleted', dataFromDeleteComment);
+			fetchComments();
+		})
+		.catch((err) => {
+			console.log('there was an issue with the deleteComment factory method', err);
+		});
+	};
+
+	$scope.deletePin = (pinId) => {
+		CommentFactory.deletePinComments(pinId)
+		.then((dataFromDeletePinComments) => {
+			return PinFactory.deletePin(pinId);
+		})
+		.then((dataFromDeletePin) => {
+			console.log('dataFromDeletePin', dataFromDeletePin);
+			fetchPins();
+		})
+		.catch((err) => {
+			console.log('deletePinComments factory method issue', err);
 		});
 	};
 

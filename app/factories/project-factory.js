@@ -93,6 +93,27 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
+	let deleteImageFile = (fbStorageRef) => {
+
+		return $q((resolve, reject) => {
+			// Create a reference to the file to delete
+			var deleteRef = firebase.storage().ref(fbStorageRef);
+
+			// Delete the file
+			deleteRef.delete()
+			.then((success) => {
+			  // File deleted successfully
+			  console.log('file deleted successfully', success);
+			  resolve(success);
+			}).catch(function(error) {
+			  // Uh-oh, an error occurred!
+			  console.log('Uh-oh, an error occurred', error);
+			  reject(error);
+			});
+		});
+
+	};
+
 	let editProject = (projectObj, projectId) => {
 		console.log('project data to be updated', projectObj);
 		return $q((resolve, reject) => {
@@ -111,7 +132,21 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
-	return {createNewProject, getProjects, uploadImageFile, getProject, editProject};
+	let deleteProject = (projectId) => {
+		return $q((resolve, reject) => {
+			if (projectId) {
+				$http.delete(`${FirebaseUrl}projects/${projectId}.json`)
+				.then((deleteProjectData) => {
+					resolve(deleteProjectData);
+				})
+				.catch((err) => {
+					reject(err);
+				});
+			}
+		});
+	};
+
+	return {createNewProject, getProjects, uploadImageFile, getProject, editProject, deleteProject, deleteImageFile};
 
 });
 

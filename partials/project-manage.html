@@ -2,13 +2,18 @@
 	<div class="row">
 		<div class="pin-list col-md-4">
 			<h2>Pins</h2>
-			<label for="manage-pins">Add Pins</label>
-			<input type="radio" id="manage-pins" ng-model="manager" value="pins">
-			<label for="manage-comments">Add Comments</label>
-			<input type="radio" id="manage-comments" ng-model="manager" value="comments">
+			<div>
+				<label for="manage-pins">Manage Pins</label>
+				<input type="radio" id="manage-pins" ng-model="manager" value="pins">
+			</div>
+			<div>
+				<label for="manage-comments">Manage Comments</label>
+				<input type="radio" id="manage-comments" ng-model="manager" value="comments">
+			</div>
 			<div class="pins-section" ng-show="manager == 'pins'">
+				<input type="test" ng-model="newPin.name" placeholder="Give your pin a name">
 				<ul>
-					<li ng-repeat="pin in pins">X Coordinate: {{pin.xCoord}} | Y Coordinate: {{pin.yCoord}}</li>
+					<li ng-repeat="pin in pins">{{pin.name}} | X: {{pin.xCoord}} | Y: {{pin.yCoord}} | <button ng-click="deletePin(pin.id)">Delete</button></li>
 				</ul>
 			</div>
 			<div class="comments-section" ng-show="manager == 'comments'">
@@ -20,14 +25,15 @@
 					<input type="text" ng-model="newComment.description">
 					<button ng-click="addComment()">Add</button>
 					<ul>
-						<li ng-repeat="comment in comments | filter: {pin_id:selectedPin}">Comment: {{comment.description}}</li>
+						<li ng-repeat="comment in comments | filter: {pin_id:selectedPin}">Comment: {{comment.description}} <button ng-click="deleteComment(comment.id)">Delete</button></li>
 					</ul>
 				</div>
 			</div>
 		</div>
 		<div class="pin-img-container col-md-8">
 			<img class="pin-img" src="{{project.imageUrl}}" ng-click="addPin($event)">
-			<img class="pin-icon" ng-src="{{pin.id === selectedPin && 'images/pin-white.svg' || 'images/pin.svg'}}" ng-repeat="pin in pins" ng-click="selectPin(pin.id)" style="left:{{pin.xCoord}}px;top:{{pin.yCoord}}px;">
+			<!-- https://stackoverflow.com/questions/13999659/conditionally-change-img-src-based-on-model-data -->
+			<img class="pin-icon" ng-src="{{pin.id === selectedPin && 'images/pin-white.svg' || 'images/pin-black.svg'}}" ng-repeat="pin in pins" ng-click="selectPin(pin.id)" style="left:{{pin.xCoord}}px;top:{{pin.yCoord}}px;">
 		</div>
 	</div>
 </div>

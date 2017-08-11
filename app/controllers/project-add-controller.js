@@ -4,7 +4,9 @@ pushPinApp.controller('ProjectAddController', function($scope, $window, ProjectF
 
 	console.log('project add controller running');
 
-	$scope.project = {};
+	$scope.project = {
+		designer_id: UserFactory.getUser()
+	};
 
 	// $scope.file = {};
 

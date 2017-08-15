@@ -19,7 +19,7 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
       firebase.auth().onAuthStateChanged(function(user) {
         // console.log("onAuthStateChanged finished");
         if (user) {
-          // console.log("user", user);
+          console.log("user", user);
           currentUser = user.uid;
           resolve(true);
         } else {
@@ -60,7 +60,23 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
+  let modifyProfile = (userName) => {
+    return $q((resolve, reject) => {
+      var user = firebase.auth().currentUser;
+
+      user.updateProfile({
+        displayName: userName
+        // photoURL: "https://example.com/jane-q-user/profile.jpg"
+      }).then(function() {
+        let displayName = user.displayName;
+        resolve(displayName);
+      }).catch(function(error) {
+        reject(error);
+      });
+    });
+  };
+
   console.log("firebase", firebase );
 
-  return {isAuthenticated, getUser, createUser, loginUser, logoutUser};
+  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile};
 });

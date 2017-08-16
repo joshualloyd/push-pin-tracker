@@ -13,4 +13,11 @@
 	<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
 </div>
 
+<div>
+	<label>Client:</label>
+	<select name="client-select" id="client-select" ng-model="project.client_uid">
+		<option ng-repeat="client in clients" value="{{client.uid}}">{{client.name}}</option>
+	</select>
+</div>
+
 <button ng-click="saveNewProject()">Create Project</button>

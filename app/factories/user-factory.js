@@ -76,7 +76,67 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
+  let createClient = (userId) => {
+    return $q((resolve, reject) => {
+      // get user info from firebase
+      let currentUser = firebase.auth().currentUser;
+      // empty client
+      let newClient = {};
+      // set the variables
+      if (currentUser !== null) {
+        newClient.name = currentUser.displayName;
+        newClient.email = currentUser.email;
+        newClient.uid = currentUser.uid;
+      }
+
+      $http.post(`${FirebaseUrl}clients.json`, angular.toJson(newClient))
+      .then((newClientData) => {
+        resolve(newClientData);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+
+    });
+  };
+
+  let createDesigner = (userId) => {
+      return $q((resolve, reject) => {
+        // get user info from firebase
+        let currentUser = firebase.auth().currentUser;
+        // empty client
+        let newDesigner = {};
+        // set the variables
+        if (currentUser !== null) {
+          newDesigner.name = currentUser.displayName;
+          newDesigner.email = currentUser.email;
+          newDesigner.uid = currentUser.uid;
+        }
+
+        $http.post(`${FirebaseUrl}designers.json`, angular.toJson(newDesigner))
+        .then((newDesignerData) => {
+          resolve(newDesignerData);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+
+      });
+    };
+
+    let getClients = () => {
+      return $q((resolve, reject) => {
+        $http.get(`${FirebaseUrl}clients.json`)
+        .then((allClientsData) => {
+          resolve(allClientsData.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+      });
+    };
+
   console.log("firebase", firebase );
 
-  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile};
+  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile, createClient, createDesigner, getClients};
 });

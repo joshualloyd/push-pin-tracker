@@ -5,10 +5,26 @@ pushPinApp.controller('ProjectAddController', function($scope, $window, ProjectF
 	console.log('project add controller running');
 
 	$scope.project = {
-		designer_id: UserFactory.getUser()
+		designer_uid: UserFactory.getUser()
 	};
 
-	// $scope.file = {};
+	fetchClients();
+
+	function fetchClients() {
+		UserFactory.getClients()
+		.then((dataFromGetClients) => {
+			console.log('all the clients', dataFromGetClients);
+			let allClientsArray = [];
+			Object.keys(dataFromGetClients).forEach((key) => {
+				dataFromGetClients[key].id = key;
+				allClientsArray.push(dataFromGetClients[key]);
+			});
+			$scope.clients = allClientsArray;
+		})
+		.catch((err) => {
+			console.log('issue with getClients', err);
+		});
+	}
 
 	$scope.saveNewProject = () => {
 		// console.log('project data', $scope.project);

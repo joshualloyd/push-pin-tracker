@@ -1,5 +1,12 @@
 <div>
 	<label>Create a Username:</label>
 	<input type="text" placeholder="pick a Username" ng-model="userName">
+
+	<label for="user-type-client">I am a Client</label>
+	<input type="radio" id="user-type-client" ng-model="userType" value="client">
+
+	<label for="user-type-designer">I am Designer</label>
+	<input type="radio" id="user-type-designer" ng-model="userType" value="designer">
+
 	<button ng-click="saveUserName()">Save Username</button>
 </div>

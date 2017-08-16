@@ -1,6 +1,7 @@
 'use strict';
 
-pushPinApp.controller('ProjectManageController', function($scope, $window, $routeParams, PinFactory, ProjectFactory, CommentFactory){
+pushPinApp.controller('ProjectManageController', function($scope, $window, $routeParams, PinFactory, ProjectFactory, CommentFactory, UserFactory){
+
 
 	$scope.pin = {
 		project_id: $routeParams.projectId
@@ -9,7 +10,8 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	$scope.manager = 'pins';
 
 	$scope.newComment = {
-		project_id: $routeParams.projectId
+		project_id: $routeParams.projectId,
+		commenter: UserFactory.getUser()
 	};
 
 	fetchPins();
@@ -77,6 +79,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		CommentFactory.createComment($scope.newComment)
 		.then((dataFromAddComment) => {
 			console.log('new comment data', dataFromAddComment);
+			$scope.newComment.commenter =
 			$scope.newComment.description = '';
 			fetchComments();
 		})

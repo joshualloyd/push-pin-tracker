@@ -14,12 +14,7 @@ pushPinApp.controller('ProjectAddController', function($scope, $window, ProjectF
 		UserFactory.getClients()
 		.then((dataFromGetClients) => {
 			console.log('all the clients', dataFromGetClients);
-			let allClientsArray = [];
-			Object.keys(dataFromGetClients).forEach((key) => {
-				dataFromGetClients[key].id = key;
-				allClientsArray.push(dataFromGetClients[key]);
-			});
-			$scope.clients = allClientsArray;
+			$scope.clients = dataFromGetClients;
 		})
 		.catch((err) => {
 			console.log('issue with getClients', err);

@@ -20,7 +20,7 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		return $q((resolve, reject)=>{
 			$http.get(`${FirebaseUrl}projects.json`)
 			.then((projectsData)=>{
-				resolve(projectsData);
+				resolve(projectsData.data);
 			})
 			.catch((err)=>{
 				reject(err);

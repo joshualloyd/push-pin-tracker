@@ -13,13 +13,14 @@ pushPinApp.controller("ProfileCreateController", function($scope, $window, $rout
 		UserFactory.modifyProfile($scope.userName)
 		.then((successData) => {
 			console.log('modifyProfile worked', successData);
-			if ($scope.userType === 'client') {
-				return UserFactory.createClient($scope.user.uid);
-			} else if ($scope.userType === 'designer') {
-				return UserFactory.createDesigner($scope.user.uid);
-			} else {
-				console.log('user type not selected', $scope.userType);
-			}
+			// if ($scope.userType === 'client') {
+			// 	return UserFactory.createClient($scope.user.uid);
+			// } else if ($scope.userType === 'designer') {
+			// 	return UserFactory.createDesigner($scope.user.uid);
+			// } else {
+			// 	console.log('user type not selected', $scope.userType);
+			// }
+			return UserFactory.createUserInfo($scope.user.uid, $scope.userType);
 		})
 		.then((newUserData) => {
 			console.log('new user created', newUserData);

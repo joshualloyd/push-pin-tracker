@@ -2,7 +2,6 @@
 
 pushPinApp.controller('ProjectManageController', function($scope, $window, $routeParams, PinFactory, ProjectFactory, CommentFactory, UserFactory){
 
-
 	$scope.pin = {
 		project_id: $routeParams.projectId
 	};
@@ -11,11 +10,22 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 
 	$scope.newComment = {
 		project_id: $routeParams.projectId,
-		commenter: UserFactory.getUser()
+		commenter_uid: UserFactory.getUser()
 	};
 
-	fetchPins();
-	fetchComments();
+	// fetchRelevantUsers();
+	// fetchPins();
+	// fetchComments();
+
+	// function fetchRelevantUsers() {
+	// 	UserFactory.getUser()
+	// 	.then((dataFromGetUser) => {
+	// 		$scope.currentUser = '';
+	// 	})
+	// 	.catch((err) => {
+	// 		console.log('there was an issue getting users', err);
+	// 	});
+	// }
 
 	function fetchPins() {
 		PinFactory.getPins($routeParams.projectId)
@@ -32,7 +42,20 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		CommentFactory.getComments($routeParams.projectId)
 		.then((commentsData) => {
 			console.log('the comments returned from the factory', commentsData);
-			$scope.comments = commentsData;
+			let finishedComments = commentsData.map((comment) => {
+				if (comment.commenter_uid === $scope.project.designer_uid) {
+					comment.commenter_name = $scope.project.designerName;
+					return comment;
+				} else if (comment.commenter_uid === $scope.project.client_uid) {
+					comment.commenter_name = $scope.project.clientName;
+					return comment;
+				}	else {
+					console.log('no matching commenter name', comment.commenter_uid);
+				}
+			});
+
+			$scope.comments = finishedComments;
+
 		})
 		.catch((err) => {
 			console.log('getComments factory method had some trouble', err);
@@ -43,6 +66,20 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	ProjectFactory.getProject($routeParams.projectId)
 	.then((dataFromGetProject) => {
 		$scope.project = dataFromGetProject;
+		return UserFactory.getUserInfoByUid($scope.project.designer_uid);
+	})
+	.then((designerData) => {
+		console.log('designerData', designerData);
+		$scope.project.designerName = designerData.name;
+		return UserFactory.getUserInfoByUid($scope.project.client_uid);
+	})
+	.then((clientData) => {
+		$scope.project.clientName = clientData.name;
+		fetchPins();
+		fetchComments();
+	})
+	.catch((err) => {
+		console.log('issue with project, designer or client', err);
 	});
 
 	$scope.addPin = (clickEvent) => {
@@ -79,7 +116,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		CommentFactory.createComment($scope.newComment)
 		.then((dataFromAddComment) => {
 			console.log('new comment data', dataFromAddComment);
-			$scope.newComment.commenter =
+			$scope.newComment.commenter_uid = UserFactory.getUser();
 			$scope.newComment.description = '';
 			fetchComments();
 		})

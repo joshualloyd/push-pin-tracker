@@ -31,17 +31,31 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 			$http.get(`${FirebaseUrl}pins.json`)
 			.then((pinsData) => {
 				let pinsArray = [];
-				let pinsObjects = pinsData.data;
-				Object.keys(pinsObjects).forEach((key) => {
-					pinsObjects[key].id = key;
-					pinsArray.push(pinsObjects[key]);
+				// let pinsObjects = pinsData.data;
+
+				if (pinsData.data === null) {
+					console.log('no pins found',pinsData.data);
+					resolve(null);
+				}
+
+				Object.keys(pinsData.data).forEach((key) => {
+					pinsData.data[key].id = key;
+					pinsArray.push(pinsData.data[key]);
 				});
+
 				let filteredPinsArray = pinsArray.filter((pin) => {
 					return pin.project_id === projectId;
 				});
+
+				if (filteredPinsArray === []) {
+					console.log('no pins associated with project', filteredPinsArray);
+					resolve([]);
+				}
+
 				resolve(filteredPinsArray);
 			})
 			.catch((err) => {
+				console.log('getPins had an issue with firebase', err);
 				reject(err);
 			});
 		});
@@ -64,15 +78,29 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 			$http.get(`${FirebaseUrl}pins.json`)
 			.then((allPinsData) => {
 				let projectPinsIdArray = [];
+
+				if (allPinsData.data === null) {
+					console.log('no pins found for project', allPinsData.data);
+					resolve(null);
+				}
+
 				Object.keys(allPinsData.data).forEach((key) => {
 					if(allPinsData.data[key].project_id === projectId) {
 						projectPinsIdArray.push(key);
 					}
 				});
+
+
 				// console.log('project pins array', projectPinsIdArray);
 				let pinsDeleteArray = projectPinsIdArray.map((pinId) => {
 					return deletePin(pinId);
 				});
+
+				if (pinsDeleteArray === []) {
+					console.log('no pins associated with project', pinsDeleteArray);
+					resolve([]);
+				}
+
 				// console.log('pins delete array', pinsDeleteArray);
 				return $q.all(pinsDeleteArray);
 			})

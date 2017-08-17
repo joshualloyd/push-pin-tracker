@@ -6,17 +6,26 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 
 	let fetchProjects = () => {
 		let projectsArray = [];
+
 		ProjectFactory.getProjects()
 		.then((projectData)=>{
-			let projectsObjects = projectData.data;
-			console.log('projectsObjects', projectsObjects);
-			Object.keys(projectsObjects).forEach((key)=>{
-				projectsObjects[key].id = key;
-				projectsArray.push(projectsObjects[key]);
-			});
-			console.log('projectsArray', projectsArray);
-			$scope.projects = projectsArray;
+			console.log('projectData', projectData);
+
+			if (projectData === null) {
+				console.log('no projects found', projectData);
+				$scope.projects = [];
+			} else {
+				Object.keys(projectData).forEach((key)=>{
+					projectData[key].id = key;
+					projectsArray.push(projectData[key]);
+				});
+
+				console.log('projectsArray', projectsArray);
+				$scope.projects = projectsArray;
+			}
+
 		});
+
 	};
 
 	fetchProjects();

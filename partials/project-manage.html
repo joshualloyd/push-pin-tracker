@@ -25,7 +25,7 @@
 					<input type="text" ng-model="newComment.description">
 					<button ng-click="addComment()">Add</button>
 					<ul>
-						<li ng-repeat="comment in comments | filter: {pin_id:selectedPin}">Comment: {{comment.description}} <button ng-click="deleteComment(comment.id)">Delete</button></li>
+						<li ng-repeat="comment in comments | filter: {pin_id:selectedPin}">Name: {{comment.commenter_name}} | Comment: {{comment.description}} <button ng-click="deleteComment(comment.id)">Delete</button></li>
 					</ul>
 				</div>
 			</div>

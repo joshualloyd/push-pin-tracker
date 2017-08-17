@@ -76,22 +76,23 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
-  let createClient = (userId) => {
+  let createUserInfo = (userId, userType) => {
     return $q((resolve, reject) => {
       // get user info from firebase
       let currentUser = firebase.auth().currentUser;
       // empty client
-      let newClient = {};
+      let newUser = {};
       // set the variables
       if (currentUser !== null) {
-        newClient.name = currentUser.displayName;
-        newClient.email = currentUser.email;
-        newClient.uid = currentUser.uid;
+        newUser.name = currentUser.displayName;
+        newUser.email = currentUser.email;
+        newUser.uid = currentUser.uid;
+        newUser.type = userType;
       }
 
-      $http.post(`${FirebaseUrl}clients.json`, angular.toJson(newClient))
-      .then((newClientData) => {
-        resolve(newClientData);
+      $http.post(`${FirebaseUrl}users.json`, angular.toJson(newUser))
+      .then((newUserData) => {
+        resolve(newUserData);
       })
       .catch((err) => {
         reject(err);
@@ -100,43 +101,61 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
-  let createDesigner = (userId) => {
-      return $q((resolve, reject) => {
-        // get user info from firebase
-        let currentUser = firebase.auth().currentUser;
-        // empty client
-        let newDesigner = {};
-        // set the variables
-        if (currentUser !== null) {
-          newDesigner.name = currentUser.displayName;
-          newDesigner.email = currentUser.email;
-          newDesigner.uid = currentUser.uid;
-        }
+  let getClients = () => {
+    return $q((resolve, reject) => {
+      $http.get(`${FirebaseUrl}users.json`)
+      .then((allUsersData) => {
+        let allUsersArray = [];
 
-        $http.post(`${FirebaseUrl}designers.json`, angular.toJson(newDesigner))
-        .then((newDesignerData) => {
-          resolve(newDesignerData);
-        })
-        .catch((err) => {
-          reject(err);
+        Object.keys(allUsersData.data).forEach((key) => {
+          allUsersData.data[key].id = key;
+          allUsersArray.push(allUsersData.data[key]);
         });
 
-      });
-    };
-
-    let getClients = () => {
-      return $q((resolve, reject) => {
-        $http.get(`${FirebaseUrl}clients.json`)
-        .then((allClientsData) => {
-          resolve(allClientsData.data);
-        })
-        .catch((err) => {
-          reject(err);
+        let allClientsArray = allUsersArray.filter((user) => {
+          return user.type === 'client';
         });
+
+        resolve(allClientsArray);
+      })
+      .catch((err) => {
+        reject(err);
       });
-    };
+    });
+  };
 
-  console.log("firebase", firebase );
+  let getUserInfoByUid = (userUid) => {
+    return $q((resolve, reject) => {
+      $http.get(`${FirebaseUrl}users.json`)
+      .then((dataFromGetUserInfo) => {
+        console.log('dataFromGetUserInfo', dataFromGetUserInfo);
+        console.log('userUid', userUid);
 
-  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile, createClient, createDesigner, getClients};
+        let userInfoObj;
+
+        // for(var user in dataFromGetUserInfo.data) {
+        //   if (user.uid === userUid) {
+        //     userInfoObj = user;
+        //   }
+        // }
+
+        Object.keys(dataFromGetUserInfo.data).forEach((key) => {
+          if (dataFromGetUserInfo.data[key].uid === userUid) {
+            userInfoObj = dataFromGetUserInfo.data[key];
+          }
+        });
+
+        console.log('userInfoObj', userInfoObj);
+
+        resolve(userInfoObj);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+    });
+  };
+
+  console.log("firebase", firebase);
+
+  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile, getClients, createUserInfo, getUserInfoByUid};
 });

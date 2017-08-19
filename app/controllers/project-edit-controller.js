@@ -1,8 +1,14 @@
 'use strict';
 
-pushPinApp.controller('ProjectEditController', function($scope, $window, $routeParams, ProjectFactory) {
+pushPinApp.controller('ProjectEditController', function($scope, $window, $routeParams, ProjectFactory, UserFactory) {
 
-	ProjectFactory.getProject($routeParams.projectId)
+	let userToken = null;
+
+	UserFactory.getUserToken()
+	.then((userTokenString) => {
+		userToken = userTokenString;
+		return ProjectFactory.getProject($routeParams.projectId, userToken);
+	})
 	.then((projectData) => {
 		$scope.project = projectData;
 		console.log('project scope', $scope.project);
@@ -12,7 +18,7 @@ pushPinApp.controller('ProjectEditController', function($scope, $window, $routeP
 	});
 
 	$scope.editProject = () => {
-		ProjectFactory.editProject($scope.project, $routeParams.projectId)
+		ProjectFactory.editProject($scope.project, $routeParams.projectId, userToken)
 		.then((dataFromEditProject) => {
 			console.log('data from edit project', dataFromEditProject);
 			$window.location.href = '#!/projects/view';

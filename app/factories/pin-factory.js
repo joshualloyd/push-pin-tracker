@@ -2,9 +2,9 @@
 
 pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 
-	let createPin = (newPinObj) => {
+	let createPin = (newPinObj, userToken) => {
 		return $q((resolve, reject) => {
-			$http.post(`${FirebaseUrl}pins.json`, angular.toJson(newPinObj))
+			$http.post(`${FirebaseUrl}pins.json?auth=${userToken}`, angular.toJson(newPinObj))
 			.then((newPinData) => {
 				resolve(newPinData);
 			})
@@ -14,9 +14,9 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let getPin = (pinId) => {
+	let getPin = (pinId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}pins/${pinId}.json`)
+			$http.get(`${FirebaseUrl}pins/${pinId}.json?auth=${userToken}`)
 			.then((pinData) => {
 				resolve(pinData.data);
 			})
@@ -26,9 +26,9 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let getPins = (projectId) => {
+	let getPins = (projectId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}pins.json`)
+			$http.get(`${FirebaseUrl}pins.json?auth=${userToken}`)
 			.then((pinsData) => {
 				let pinsArray = [];
 				// let pinsObjects = pinsData.data;
@@ -61,9 +61,9 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deletePin = (pinId) => {
+	let deletePin = (pinId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.delete(`${FirebaseUrl}pins/${pinId}.json`)
+			$http.delete(`${FirebaseUrl}pins/${pinId}.json?auth=${userToken}`)
 			.then((deletePinData) => {
 				resolve(deletePinData.data);
 			})
@@ -73,9 +73,9 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deleteProjectPins = (projectId) => {
+	let deleteProjectPins = (projectId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}pins.json`)
+			$http.get(`${FirebaseUrl}pins.json?auth=${userToken}`)
 			.then((allPinsData) => {
 				let projectPinsIdArray = [];
 

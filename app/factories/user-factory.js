@@ -11,6 +11,7 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
   firebase.initializeApp(config);
 
   let currentUser = null;
+  // let userToken = null;
 
   let isAuthenticated = function() {
     // console.log("isAuthenticated called");
@@ -21,6 +22,7 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
         if (user) {
           console.log("user", user);
           currentUser = user.uid;
+
           resolve(true);
         } else {
           resolve(false);
@@ -33,6 +35,10 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     return currentUser;
   };
 
+  // let getUserToken = () => {
+  //   return userToken;
+  // };
+
   let createUser = (userObj) => {
     return firebase.auth().createUserWithEmailAndPassword(userObj.email, userObj.password)
     .catch( (err) => {
@@ -42,6 +48,7 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
 
   let loginUser = (userObj) => {
     return $q( (resolve, reject) => {
+      console.log('userObj', userObj);
       firebase.auth().signInWithEmailAndPassword(userObj.email, userObj.password)
       .then( (user) => {
         currentUser = user.uid;
@@ -76,7 +83,22 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
-  let createUserInfo = (userId, userType) => {
+  let getUserToken = () => {
+    return new Promise((resolve, reject) => {
+      var user = firebase.auth().currentUser;
+
+      user.getIdToken()
+      .then((tokenString) => {
+        // console.log(tokenString);
+        resolve(tokenString);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+    });
+  };
+
+  let createUserInfo = (userId, userType, userToken) => {
     return $q((resolve, reject) => {
       // get user info from firebase
       let currentUser = firebase.auth().currentUser;
@@ -90,7 +112,7 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
         newUser.type = userType;
       }
 
-      $http.post(`${FirebaseUrl}users.json`, angular.toJson(newUser))
+      $http.post(`${FirebaseUrl}users.json?auth=${userToken}`, angular.toJson(newUser))
       .then((newUserData) => {
         resolve(newUserData);
       })
@@ -101,9 +123,9 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
-  let getClients = () => {
+  let getClients = (userToken) => {
     return $q((resolve, reject) => {
-      $http.get(`${FirebaseUrl}users.json`)
+      $http.get(`${FirebaseUrl}users.json?auth=${userToken}`)
       .then((allUsersData) => {
         let allUsersArray = [];
 
@@ -124,9 +146,9 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
     });
   };
 
-  let getUserInfoByUid = (userUid) => {
+  let getUserInfoByUid = (userUid, userToken) => {
     return $q((resolve, reject) => {
-      $http.get(`${FirebaseUrl}users.json`)
+      $http.get(`${FirebaseUrl}users.json?auth=${userToken}`)
       .then((dataFromGetUserInfo) => {
         console.log('dataFromGetUserInfo', dataFromGetUserInfo);
         console.log('userUid', userUid);
@@ -157,5 +179,5 @@ pushPinApp.factory("UserFactory", function($q, $http, FirebaseUrl, FBCreds) {
 
   console.log("firebase", firebase);
 
-  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile, getClients, createUserInfo, getUserInfoByUid};
+  return {isAuthenticated, getUser, createUser, loginUser, logoutUser, modifyProfile, getClients, createUserInfo, getUserInfoByUid, getUserToken};
 });

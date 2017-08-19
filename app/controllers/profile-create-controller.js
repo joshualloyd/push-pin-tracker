@@ -6,11 +6,18 @@ pushPinApp.controller("ProfileCreateController", function($scope, $window, $rout
 
 	console.log('ProfileCreateController runs');
 
+	let userToken = null;
+
 	$scope.user = UserFactory.getUser();
 	$scope.userName = '';
 
 	$scope.saveUserName = () => {
-		UserFactory.modifyProfile($scope.userName)
+
+		UserFactory.getUserToken()
+		.then((userTokenString) => {
+			userToken = userTokenString;
+			return UserFactory.modifyProfile($scope.userName);
+		})
 		.then((successData) => {
 			console.log('modifyProfile worked', successData);
 			// if ($scope.userType === 'client') {
@@ -20,7 +27,7 @@ pushPinApp.controller("ProfileCreateController", function($scope, $window, $rout
 			// } else {
 			// 	console.log('user type not selected', $scope.userType);
 			// }
-			return UserFactory.createUserInfo($scope.user.uid, $scope.userType);
+			return UserFactory.createUserInfo($scope.user.uid, $scope.userType, userToken);
 		})
 		.then((newUserData) => {
 			console.log('new user created', newUserData);

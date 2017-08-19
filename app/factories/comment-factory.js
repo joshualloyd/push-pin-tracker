@@ -2,9 +2,9 @@
 
 pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 
-	let getComment = (commentId) => {
+	let getComment = (commentId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments/${commentId}.json`)
+			$http.get(`${FirebaseUrl}comments/${commentId}.json?auth=${userToken}`)
 			.then((commentData) => {
 				resolve(commentData.data);
 			})
@@ -14,9 +14,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let getComments = (projectId) => {
+	let getComments = (projectId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments.json`)
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((commentsData) => {
 				console.log('comments from firebase', commentsData);
 				let allCommentsArray = [];
@@ -50,9 +50,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let createComment = (newCommentObj) => {
+	let createComment = (newCommentObj, userToken) => {
 		return $q((resolve, reject) => {
-			$http.post(`${FirebaseUrl}comments.json`, angular.toJson(newCommentObj))
+			$http.post(`${FirebaseUrl}comments.json?auth=${userToken}`, angular.toJson(newCommentObj))
 			.then((newCommentData) => {
 				resolve(newCommentData.data);
 			})
@@ -62,9 +62,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deleteComment = (commentId) => {
+	let deleteComment = (commentId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.delete(`${FirebaseUrl}comments/${commentId}.json`)
+			$http.delete(`${FirebaseUrl}comments/${commentId}.json?auth=${userToken}`)
 			.then((deletedCommentData) => {
 				resolve(deletedCommentData);
 			})
@@ -74,9 +74,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deletePinComments = (pinId) => {
+	let deletePinComments = (pinId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments.json`)
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((allCommentsData) => {
 				console.log('allCommentsData', allCommentsData.data);
 				let allCommentsArray = [];
@@ -115,9 +115,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deleteProjectComments = (projectId) => {
+	let deleteProjectComments = (projectId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments.json`)
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((allCommentsData) => {
 				// console.log('allCommentsData', allCommentsData.data);
 				let allCommentsArray = [];

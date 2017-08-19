@@ -2,12 +2,15 @@
 
 pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory, UserFactory, PinFactory, CommentFactory) {
 
+	let currentUser = null;
+	let userToken = null;
+
 	$scope.heading = 'My Projects';
 
-	let fetchProjects = () => {
+	let fetchProjects = (tokenString) => {
 		let projectsArray = [];
 
-		ProjectFactory.getProjects()
+		ProjectFactory.getProjects(tokenString)
 		.then((projectData)=>{
 			console.log('projectData', projectData);
 
@@ -28,7 +31,21 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 
 	};
 
-	fetchProjects();
+	UserFactory.isAuthenticated()
+  .then( (user) => {
+    // console.log("user status", user);
+    currentUser = UserFactory.getUser();
+    return UserFactory.getUserToken();
+  })
+  .then((userTokenString) => {
+  	userToken = userTokenString;
+  	fetchProjects(userToken);
+  })
+  .catch((err) => {
+  	console.log('problems', err);
+  });
+
+	// fetchProjects();
 
 	$scope.deleteProject = (project) => {
 

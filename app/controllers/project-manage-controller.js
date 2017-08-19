@@ -2,6 +2,8 @@
 
 pushPinApp.controller('ProjectManageController', function($scope, $window, $routeParams, PinFactory, ProjectFactory, CommentFactory, UserFactory){
 
+	let userToken = null;
+
 	$scope.pin = {
 		project_id: $routeParams.projectId
 	};
@@ -13,22 +15,8 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		commenter_uid: UserFactory.getUser()
 	};
 
-	// fetchRelevantUsers();
-	// fetchPins();
-	// fetchComments();
-
-	// function fetchRelevantUsers() {
-	// 	UserFactory.getUser()
-	// 	.then((dataFromGetUser) => {
-	// 		$scope.currentUser = '';
-	// 	})
-	// 	.catch((err) => {
-	// 		console.log('there was an issue getting users', err);
-	// 	});
-	// }
-
 	function fetchPins() {
-		PinFactory.getPins($routeParams.projectId)
+		PinFactory.getPins($routeParams.projectId, userToken)
 		.then((pinData) => {
 			console.log('the pins returned from the factory', pinData);
 			$scope.pins = pinData;
@@ -39,7 +27,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	}
 
 	function fetchComments() {
-		CommentFactory.getComments($routeParams.projectId)
+		CommentFactory.getComments($routeParams.projectId, userToken)
 		.then((commentsData) => {
 			console.log('the comments returned from the factory', commentsData);
 			let finishedComments = commentsData.map((comment) => {
@@ -62,16 +50,19 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		});
 	}
 
-
-	ProjectFactory.getProject($routeParams.projectId)
+	UserFactory.getUserToken()
+	.then((userTokenString) => {
+		userToken = userTokenString;
+		return ProjectFactory.getProject($routeParams.projectId, userToken);
+	})
 	.then((dataFromGetProject) => {
 		$scope.project = dataFromGetProject;
-		return UserFactory.getUserInfoByUid($scope.project.designer_uid);
+		return UserFactory.getUserInfoByUid($scope.project.designer_uid, userToken);
 	})
 	.then((designerData) => {
 		console.log('designerData', designerData);
 		$scope.project.designerName = designerData.name;
-		return UserFactory.getUserInfoByUid($scope.project.client_uid);
+		return UserFactory.getUserInfoByUid($scope.project.client_uid, userToken);
 	})
 	.then((clientData) => {
 		$scope.project.clientName = clientData.name;
@@ -89,7 +80,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 			$scope.pin.yCoord = clickEvent.offsetY;
 			$scope.pin.name = $scope.newPin.name;
 
-			PinFactory.createPin($scope.pin)
+			PinFactory.createPin($scope.pin, userToken)
 			.then((dataFromAddPin) => {
 				console.log("new pin data", dataFromAddPin);
 				$scope.newPin.name = '';
@@ -113,7 +104,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	$scope.addComment = () => {
 		console.log('you clicked the add comment button');
 		$scope.newComment.pin_id = $scope.selectedPin;
-		CommentFactory.createComment($scope.newComment)
+		CommentFactory.createComment($scope.newComment, userToken)
 		.then((dataFromAddComment) => {
 			console.log('new comment data', dataFromAddComment);
 			$scope.newComment.commenter_uid = UserFactory.getUser();
@@ -127,7 +118,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 
 	$scope.deleteComment = (commentId) => {
 		console.log('commentId', commentId);
-		CommentFactory.deleteComment(commentId)
+		CommentFactory.deleteComment(commentId, userToken)
 		.then((dataFromDeleteComment) => {
 			console.log('a comment was deleted', dataFromDeleteComment);
 			fetchComments();
@@ -138,7 +129,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	};
 
 	$scope.deletePin = (pinId) => {
-		CommentFactory.deletePinComments(pinId)
+		CommentFactory.deletePinComments(pinId, userToken)
 		.then((dataFromDeletePinComments) => {
 			return PinFactory.deletePin(pinId);
 		})

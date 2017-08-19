@@ -22,7 +22,7 @@ pushPinApp.controller("UserController", function($scope, $window, UserFactory) {
   $scope.login = () => {
     UserFactory.loginUser($scope.account)
     .then( (userData) => {
-      // console.log("userData", userData);
+      console.log("userData", userData);
       $window.location.href = '#!/projects/view';
     });
   };

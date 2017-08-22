@@ -12,15 +12,17 @@ pushPinApp.controller("UserController", function($scope, $window, UserFactory) {
     // console.log("you clicked register");
     UserFactory.createUser($scope.account)
     .then( (userData) => {
-      // console.log("New User!", userData);
-      $scope.login();
+      console.log("New User!", userData.uid);
+      let userId = userData.uid;
+      $window.location.href = `#!/profiles/create/${userId}`;
+      // $scope.login();
     });
   };
 
   $scope.login = () => {
     UserFactory.loginUser($scope.account)
     .then( (userData) => {
-      // console.log("userData", userData);
+      console.log("userData", userData);
       $window.location.href = '#!/projects/view';
     });
   };

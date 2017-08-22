@@ -2,11 +2,11 @@
 
 pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 
-	let createNewProject = (newProjectObj, imageUrl) => {
+	let createNewProject = (newProjectObj, imageUrl, userToken) => {
 		newProjectObj.fbStorageRef = `images/${newProjectObj.file.name}`;
 		newProjectObj.imageUrl = imageUrl;
 		return $q((resolve, reject) => {
-			$http.post(`${FirebaseUrl}projects.json`, angular.toJson(newProjectObj))
+			$http.post(`${FirebaseUrl}projects.json?auth=${userToken}`, angular.toJson(newProjectObj))
 			.then((newProjectData) => {
 				resolve(newProjectData);
 			})
@@ -16,11 +16,13 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
-	let getProjects = () => {
-		return $q((resolve, reject)=>{
-			$http.get(`${FirebaseUrl}projects.json`)
+	let getProjects = (userToken) => {
+		// console.log('userToken', userToken);
+		console.log('test url for getting projects', `${FirebaseUrl}projects.json?auth=${userToken}`);
+		return $q((resolve, reject) => {
+			$http.get(`${FirebaseUrl}projects.json?auth=${userToken}`)
 			.then((projectsData)=>{
-				resolve(projectsData);
+				resolve(projectsData.data);
 			})
 			.catch((err)=>{
 				reject(err);
@@ -28,11 +30,11 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
-	let getProject = (projectId) => {
+	let getProject = (projectId, userToken) => {
 		// console.log('is this get project factory method running', projectId);
 		return $q((resolve, reject) => {
 			// console.log('testing get project URL', `${FirebaseUrl}projects/${projectId}.json`);
-			$http.get(`${FirebaseUrl}projects/${projectId}.json`)
+			$http.get(`${FirebaseUrl}projects/${projectId}.json?auth=${userToken}`)
 			.then((projectData) => {
 				// console.log('project data?', projectData);
 				resolve(projectData.data);
@@ -114,11 +116,11 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 
 	};
 
-	let editProject = (projectObj, projectId) => {
+	let editProject = (projectObj, projectId, userToken) => {
 		console.log('project data to be updated', projectObj);
 		return $q((resolve, reject) => {
 			if (projectObj && projectId) {
-				$http.put(`${FirebaseUrl}projects/${projectId}.json`,
+				$http.put(`${FirebaseUrl}projects/${projectId}.json?auth=${userToken}`,
 					angular.toJson(projectObj))
 				.then((editedProjectData) => {
 					resolve(editedProjectData);
@@ -132,10 +134,10 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 		});
 	};
 
-	let deleteProject = (projectId) => {
+	let deleteProject = (projectId, userToken) => {
 		return $q((resolve, reject) => {
 			if (projectId) {
-				$http.delete(`${FirebaseUrl}projects/${projectId}.json`)
+				$http.delete(`${FirebaseUrl}projects/${projectId}.json?auth=${userToken}`)
 				.then((deleteProjectData) => {
 					resolve(deleteProjectData);
 				})

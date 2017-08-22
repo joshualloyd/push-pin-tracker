@@ -1,5 +1,24 @@
-<div>{{heading}}</div>
-
-<ul>
-	<li ng-repeat="project in projects"><a href="#!/project/view/{{project.id}}">{{project.name}}</a> | {{project.description}} <img class="project-thumb" ng-src="{{project.imageUrl}}"><a href="#!/project/edit/{{project.id}}"><button>Edit</button></a><a href="#!/project/manage/{{project.id}}"><button>Manage</button></a><button ng-click="deleteProject(project)">Delete</button></li>
-</ul>
+<div class="container-fluid">
+	<div class="page-header">
+		<h1>{{currentUserName}}'s Projects</h1>
+	</div>
+	<div class="row">
+		<div class="col-sm-6 col-md-4 col-lg-3" ng-repeat="project in projects">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h3>{{project.name}}</h3></div>
+				<div class="panel-body">
+					<p>{{project.description}}</p>
+					<div class="thumbnail">
+						<img class="project-thumb" ng-src="{{project.imageUrl}}">
+					</div>
+					<div>
+						<a href="#!/project/view/{{project.id}}"><button button type="button" class="btn btn-primary">View</button></a>
+						<a href="#!/project/manage/{{project.id}}"><button  type="button" class="btn btn-success">Manage</button></a>
+						<a href="#!/project/edit/{{project.id}}"><button type="button" class="btn btn-warning">Edit</button></a>
+						<button class="btn btn-danger" ng-click="deleteProject(project)">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

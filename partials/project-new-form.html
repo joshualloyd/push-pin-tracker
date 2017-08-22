@@ -1,16 +1,31 @@
-<div>
-	<label>Project Name:</label>
-	<input type="text" placeholder="The name of your new project" id="project-name" ng-model="project.name">
-</div>
+<div class="container-fluid">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>{{heading}}</h1></div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Project Name:</label>
+				<input type="text" class="form-control" placeholder="The name of your new project" id="project-name" ng-model="project.name">
+			</div>
 
-<div>
-	<label>Project Description:</label>
-	<input type="text" placeholder="This takes text for now" id="image-name" ng-model="project.description">
-</div>
+			<div class="form-group">
+				<label>Project Description:</label>
+				<input type="text" class="form-control" placeholder="Describe the your project in detail" id="image-name" ng-model="project.description">
+			</div>
 
-<div>
-	<label>Project Image:</label>
-	<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
-</div>
+			<div class="form-group">
+				<label for="new-file-upload-input">Project Image:</label>
+				<input type="file" id="new-file-upload-input" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
+				<p class="help-block">Upload the file you would like to have reviewed.</p>
+			</div>
 
-<button ng-click="saveNewProject()">Create Project</button>
+			<div class="form-group">
+				<label>Client:</label>
+				<select name="client-select" id="client-select" class="form-control" ng-model="project.client_uid">
+					<option ng-repeat="client in clients" value="{{client.uid}}">{{client.name}}</option>
+				</select>
+			</div>
+			<button type="button" class="btn btn-success" ng-click="saveNewProject()">Create Project</button>
+			<a href="#!/projects/view"><button type="button" class="btn btn-default" ng-click="saveNewProject()">Cancel</button></a>
+		</div>
+	</div>
+</div>

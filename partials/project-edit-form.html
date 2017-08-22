@@ -1,17 +1,26 @@
-<div>
-	<label>Project Name:</label>
-	<input type="text" placeholder="The name of your new project" id="project-name" ng-model="project.name">
-</div>
+<div class="container-fluid">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h1>Edit Project</h1>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Project Name:</label>
+				<input type="text" class="form-control" placeholder="The name of your new project" id="project-name" ng-model="project.name">
+			</div>
 
-<div>
-	<label>Project Description:</label>
-	<input type="text" placeholder="This takes text for now" id="image-name" ng-model="project.description">
-</div>
+			<div class="form-group">
+				<label>Project Description:</label>
+				<input type="text" class="form-control" placeholder="This takes text for now" id="image-name" ng-model="project.description">
+			</div>
 
-<div>
-	<label>Project Image:</label>
-	<img src="{{project.imageUrl}}">
-	<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
-</div>
+			<div>
+				<label>Project Image:</label>
+				<img src="{{project.imageUrl}}">
+				<input type="file" accept=".png, .jpg, .jpeg" id="file-upload" file-model="project.file">
+			</div>
 
-<button ng-click="editProject()">Update Project</button>
+			<button type="button" class="btn btn-success" ng-click="editProject()">Update Project</button>
+		</div>
+	</div>
+</div>

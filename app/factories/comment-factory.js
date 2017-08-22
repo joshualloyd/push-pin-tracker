@@ -2,9 +2,9 @@
 
 pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 
-	let getComment = (commentId) => {
+	let getComment = (commentId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments/${commentId}.json`)
+			$http.get(`${FirebaseUrl}comments/${commentId}.json?auth=${userToken}`)
 			.then((commentData) => {
 				resolve(commentData.data);
 			})
@@ -14,22 +14,34 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let getComments = (projectId) => {
-		return $q((resolve, reject)=>{
-			$http.get(`${FirebaseUrl}comments.json`)
+	let getComments = (projectId, userToken) => {
+		return $q((resolve, reject) => {
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((commentsData) => {
 				console.log('comments from firebase', commentsData);
 				let allCommentsArray = [];
-				// let commentsArrayByForProject = [];
-				let commentsObjects = commentsData.data;
-				Object.keys(commentsObjects).forEach((key) => {
-					commentsObjects[key].id = key;
-					allCommentsArray.push(commentsObjects[key]);
+
+				if (commentsData.data === null) {
+					console.log('no comments found', commentsData.data);
+					resolve(null);
+				}
+
+				Object.keys(commentsData.data).forEach((key) => {
+					commentsData.data[key].id = key;
+					allCommentsArray.push(commentsData.data[key]);
 				});
+
 				console.log('allCommentsArray', allCommentsArray);
+
 				let commentsArrayByForProject = allCommentsArray.filter((comment) => {
 					return comment.project_id === projectId;
 				});
+
+				if (commentsArrayByForProject === []) {
+					console.log('no comments matching project', commentsArrayByForProject);
+					resolve([]);
+				}
+
 				resolve(commentsArrayByForProject);
 			})
 			.catch((err)=>{
@@ -38,9 +50,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let createComment = (newCommentObj) => {
+	let createComment = (newCommentObj, userToken) => {
 		return $q((resolve, reject) => {
-			$http.post(`${FirebaseUrl}comments.json`, angular.toJson(newCommentObj))
+			$http.post(`${FirebaseUrl}comments.json?auth=${userToken}`, angular.toJson(newCommentObj))
 			.then((newCommentData) => {
 				resolve(newCommentData.data);
 			})
@@ -50,9 +62,9 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deleteComment = (commentId) => {
+	let deleteComment = (commentId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.delete(`${FirebaseUrl}comments/${commentId}.json`)
+			$http.delete(`${FirebaseUrl}comments/${commentId}.json?auth=${userToken}`)
 			.then((deletedCommentData) => {
 				resolve(deletedCommentData);
 			})
@@ -62,23 +74,33 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deletePinComments = (pinId) => {
+	let deletePinComments = (pinId, userToken) => {
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments.json`)
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((allCommentsData) => {
-				// console.log('allCommentsData', allCommentsData.data);
+				console.log('allCommentsData', allCommentsData.data);
 				let allCommentsArray = [];
+				if (allCommentsData.data === null) {
+					console.log('no comments found', allCommentsData.data);
+					resolve(null);
+				}
+
 				Object.keys(allCommentsData.data).forEach((key) => {
 					allCommentsData.data[key].id = key;
 					allCommentsArray.push(allCommentsData.data[key]);
 				});
+
 				let pinComments = allCommentsArray.filter((comment) => {
 					return comment.pin_id === pinId;
 				});
+				if (pinComments === []) {
+					console.log('no comments linked to pin');
+					resolve([]);
+				}
 				// console.log('comments by pinId', pinComments);
 				let deleteCommentPromiseArray = [];
 				pinComments.forEach((pinComment) => {
-					let pinCommentDelete = deleteComment(pinComment.id);
+					let pinCommentDelete = deleteComment(pinComment.id, userToken);
 					deleteCommentPromiseArray.push(pinCommentDelete);
 				});
 				// console.log('the delete promise array', deleteCommentPromiseArray);
@@ -93,23 +115,36 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 		});
 	};
 
-	let deleteProjectComments = (projectId) => {
+	let deleteProjectComments = (projectId, userToken) => {
+
 		return $q((resolve, reject) => {
-			$http.get(`${FirebaseUrl}comments.json`)
+			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((allCommentsData) => {
 				// console.log('allCommentsData', allCommentsData.data);
 				let allCommentsArray = [];
+
+				if (allCommentsData.data === null) {
+					console.log('no comments found', allCommentsData.data);
+					resolve(null);
+				}
+
 				Object.keys(allCommentsData.data).forEach((key) => {
 					allCommentsData.data[key].id = key;
 					allCommentsArray.push(allCommentsData.data[key]);
 				});
+
 				let projectComments = allCommentsArray.filter((comment) => {
 					return comment.project_id === projectId;
 				});
+
+				if (projectComments === []) {
+					resolve([]);
+				}
+
 				// console.log('comments by pinId', pinComments);
 				let deleteCommentPromiseArray = [];
 				projectComments.forEach((projectComment) => {
-					let projectCommentDelete = deleteComment(projectComment.id);
+					let projectCommentDelete = deleteComment(projectComment.id, userToken);
 					deleteCommentPromiseArray.push(projectCommentDelete);
 				});
 				// console.log('the delete promise array', deleteCommentPromiseArray);

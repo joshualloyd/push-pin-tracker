@@ -22,6 +22,11 @@ pushPinApp.config( ($routeProvider) => {
     templateUrl: 'partials/login.html',
     controller: 'UserController'
   })
+  .when('/profiles/create/:userId', {
+    templateUrl: 'partials/profile-create-form.html',
+    controller: 'ProfileCreateController',
+    resolve: {isAuth}
+  })
   .when('/projects/view', {
     templateUrl: 'partials/projects-list.html',
     controller: 'ProjectsListController',

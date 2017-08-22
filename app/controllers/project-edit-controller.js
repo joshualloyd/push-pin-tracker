@@ -7,15 +7,23 @@ pushPinApp.controller('ProjectEditController', function($scope, $window, $routeP
 	UserFactory.getUserToken()
 	.then((userTokenString) => {
 		userToken = userTokenString;
-		return ProjectFactory.getProject($routeParams.projectId, userToken);
-	})
-	.then((projectData) => {
-		$scope.project = projectData;
-		console.log('project scope', $scope.project);
+		fetchProject(userToken);
 	})
 	.catch((err)=>{
 		console.log('the get project factory method failed', err);
 	});
+
+	function fetchProject(userToken) {
+		ProjectFactory.getProject($routeParams.projectId, userToken)
+		.then((projectData) => {
+			console.log('projectData', projectData);
+			$scope.project = projectData;
+			console.log('project scope', $scope.project);
+		})
+		.catch((err)=>{
+			console.log('the get project factory method failed', err);
+		});
+	}
 
 	$scope.editProject = () => {
 		ProjectFactory.editProject($scope.project, $routeParams.projectId, userToken)

@@ -17,7 +17,7 @@ pushPinApp.factory('ProjectFactory', function($q, $http, FirebaseUrl){
 	};
 
 	let getProjects = (userToken) => {
-		console.log('userToken', userToken);
+		// console.log('userToken', userToken);
 		console.log('test url for getting projects', `${FirebaseUrl}projects.json?auth=${userToken}`);
 		return $q((resolve, reject) => {
 			$http.get(`${FirebaseUrl}projects.json?auth=${userToken}`)

@@ -100,7 +100,7 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 				// console.log('comments by pinId', pinComments);
 				let deleteCommentPromiseArray = [];
 				pinComments.forEach((pinComment) => {
-					let pinCommentDelete = deleteComment(pinComment.id);
+					let pinCommentDelete = deleteComment(pinComment.id, userToken);
 					deleteCommentPromiseArray.push(pinCommentDelete);
 				});
 				// console.log('the delete promise array', deleteCommentPromiseArray);
@@ -116,6 +116,7 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 	};
 
 	let deleteProjectComments = (projectId, userToken) => {
+
 		return $q((resolve, reject) => {
 			$http.get(`${FirebaseUrl}comments.json?auth=${userToken}`)
 			.then((allCommentsData) => {
@@ -143,7 +144,7 @@ pushPinApp.factory('CommentFactory', function($q, $http, FirebaseUrl) {
 				// console.log('comments by pinId', pinComments);
 				let deleteCommentPromiseArray = [];
 				projectComments.forEach((projectComment) => {
-					let projectCommentDelete = deleteComment(projectComment.id);
+					let projectCommentDelete = deleteComment(projectComment.id, userToken);
 					deleteCommentPromiseArray.push(projectCommentDelete);
 				});
 				// console.log('the delete promise array', deleteCommentPromiseArray);

@@ -93,7 +93,7 @@ pushPinApp.factory('PinFactory', function($q, $http, FirebaseUrl) {
 
 				// console.log('project pins array', projectPinsIdArray);
 				let pinsDeleteArray = projectPinsIdArray.map((pinId) => {
-					return deletePin(pinId);
+					return deletePin(pinId, userToken);
 				});
 
 				if (pinsDeleteArray === []) {

@@ -1,12 +1,27 @@
-<div>
-	<label>Create a Username:</label>
-	<input type="text" placeholder="pick a Username" ng-model="userName">
+<div class="container-fluid">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>Create a Profile</h1></div>
+		<div class="panel-body">
+			<div class="form-group">
+				<label>Create a Username:</label>
+				<input type="text" class="form-control" placeholder="pick a Username" ng-model="userName">
+			</div>
 
-	<label for="user-type-client">I am a Client</label>
-	<input type="radio" id="user-type-client" ng-model="userType" value="client">
+			<div class="radio">
+				<label>
+					<input type="radio" id="user-type-client" ng-model="userType" value="client">
+					I am a Client
+				</label>
+			</div>
 
-	<label for="user-type-designer">I am Designer</label>
-	<input type="radio" id="user-type-designer" ng-model="userType" value="designer">
+			<div class="radio">
+				<label>
+					<input type="radio" id="user-type-designer" ng-model="userType" value="designer">
+					I am Designer
+				</label>
+			</div>
 
-	<button ng-click="saveUserName()">Save Username</button>
+			<button ng-click="saveUserName()">Save Profile</button>
+		</div>
+	</div>
 </div>

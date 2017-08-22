@@ -49,21 +49,23 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 
 	$scope.deleteProject = (project) => {
 
-		CommentFactory.deleteProjectComments(project.id)
+		console.log('userToken', userToken);
+
+		CommentFactory.deleteProjectComments(project.id, userToken)
 		.then((dataFromDeleteProjectComments) => {
 			console.log('data from deleteProjectComments', dataFromDeleteProjectComments);
-			return PinFactory.deleteProjectPins(project.id);
+			return PinFactory.deleteProjectPins(project.id, userToken);
 		})
 		.then((dataFromDeleteProjectPins) => {
 			//need fbStorageRef
 			return ProjectFactory.deleteImageFile(project.fbStorageRef);
 		})
 		.then((dataFromDeleteImageFile) => {
-			return ProjectFactory.deleteProject(project.id);
+			return ProjectFactory.deleteProject(project.id, userToken);
 		})
 		.then((dataFromDeleteProject) => {
 			console.log('data from deleteProject', dataFromDeleteProject);
-			fetchProjects();
+			fetchProjects(userToken);
 		})
 		.catch((err) => {
 			console.log('error deleting the project', err);

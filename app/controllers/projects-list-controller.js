@@ -5,7 +5,7 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 	let currentUser = null;
 	let userToken = null;
 
-	$scope.heading = 'My Projects';
+	$scope.currentUserName = '';
 
 	let fetchProjects = (tokenString) => {
 		let projectsArray = [];
@@ -24,7 +24,20 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 				});
 
 				console.log('projectsArray', projectsArray);
-				$scope.projects = projectsArray;
+
+				let filteredProjectsArray = projectsArray.filter((project) => {
+					if (project.client_uid === currentUser) {
+						return true;
+					}	else if (project.designer_uid === currentUser) {
+						return true;
+					} else {
+						return false;
+					}
+				});
+
+				console.log('filteredProjectsArray', filteredProjectsArray);
+
+				$scope.projects = filteredProjectsArray;
 			}
 
 		});
@@ -39,6 +52,11 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
   })
   .then((userTokenString) => {
   	userToken = userTokenString;
+  	return UserFactory.getUserInfoByUid(currentUser, userToken);
+  })
+  .then((userInfoData) => {
+  	// console.log('userInfoData', userInfoData);
+  	$scope.currentUserName = userInfoData.name;
   	fetchProjects(userToken);
   })
   .catch((err) => {
@@ -49,7 +67,7 @@ pushPinApp.controller('ProjectsListController', function($scope, ProjectFactory,
 
 	$scope.deleteProject = (project) => {
 
-		console.log('userToken', userToken);
+		// console.log('userToken', userToken);
 
 		CommentFactory.deleteProjectComments(project.id, userToken)
 		.then((dataFromDeleteProjectComments) => {

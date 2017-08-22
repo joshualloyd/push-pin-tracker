@@ -27,11 +27,15 @@ html, body {
 }
 
 .pin-img {
-	width: 500px;
+	width: 800px;
 	position: absolute;
 }
 
 .pin-icon {
-	height: 20px;
+	height: 30px;
 	position: absolute;
+}
+
+.pins-section .list-group-item>.badge {
+	float: none;
 }

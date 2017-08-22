@@ -5,6 +5,8 @@ pushPinApp.controller('ProjectAddController', function($scope, $window, ProjectF
 	let currentUser = null;
 	let userToken = null;
 
+	$scope.heading = 'Create New Project';
+
 	$scope.project = {
 		designer_uid: UserFactory.getUser()
 	};

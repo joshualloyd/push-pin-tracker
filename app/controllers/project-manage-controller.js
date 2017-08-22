@@ -3,6 +3,9 @@
 pushPinApp.controller('ProjectManageController', function($scope, $window, $routeParams, PinFactory, ProjectFactory, CommentFactory, UserFactory){
 
 	let userToken = null;
+	let currentUserUid = UserFactory.getUser();
+
+	$scope.currentUserName = null;
 
 	$scope.pin = {
 		project_id: $routeParams.projectId
@@ -12,14 +15,18 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 
 	$scope.newComment = {
 		project_id: $routeParams.projectId,
-		commenter_uid: UserFactory.getUser()
+		commenter_uid: currentUserUid
 	};
 
 	function fetchPins() {
 		PinFactory.getPins($routeParams.projectId, userToken)
 		.then((pinData) => {
 			console.log('the pins returned from the factory', pinData);
+			// pinData.forEach((pin) => {
+			// 	pin.commentCount = 0;
+			// });
 			$scope.pins = pinData;
+			updateCommentCount();
 		})
 		.catch((err)=>{
 			console.log('getPins factory method had some issues', err);
@@ -42,7 +49,20 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 				}
 			});
 
+			console.log('finishedComments', finishedComments);
+
+			// finishedComments.forEach((comment) => {
+			// 	console.log('comment',comment);
+			// 	// $scope.pins[comment.pin_id].commentCount += 1;
+			// 	$scope.pins.forEach((pin) => {
+			// 		if (pin.id === comment.pin_id) {
+			// 			pin.commentCount += 1;
+			// 		}
+			// 	});
+			// });
+
 			$scope.comments = finishedComments;
+			updateCommentCount();
 
 		})
 		.catch((err) => {
@@ -50,9 +70,27 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		});
 	}
 
+	function updateCommentCount() {
+		$scope.pins.forEach((pin) => {
+			pin.commentCount = 0;
+		});
+
+		$scope.comments.forEach((comment) => {
+			$scope.pins.forEach((pin) => {
+				if (pin.id === comment.pin_id) {
+					pin.commentCount += 1;
+				}
+			});
+		});
+	}
+
 	UserFactory.getUserToken()
 	.then((userTokenString) => {
 		userToken = userTokenString;
+		return UserFactory.getUserInfoByUid(currentUserUid, userToken);
+	})
+	.then((userInfoData) => {
+		$scope.currentUserName = userInfoData.name;
 		return ProjectFactory.getProject($routeParams.projectId, userToken);
 	})
 	.then((dataFromGetProject) => {
@@ -68,6 +106,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		$scope.project.clientName = clientData.name;
 		fetchPins();
 		fetchComments();
+		// updateCommentCount();
 	})
 	.catch((err) => {
 		console.log('issue with project, designer or client', err);
@@ -85,6 +124,8 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 				console.log("new pin data", dataFromAddPin);
 				$scope.newPin.name = '';
 				fetchPins();
+				// fetchComments();
+
 			})
 			.catch((err) => {
 				console.log('there was an issue with the addPin factory method', err);
@@ -97,7 +138,8 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		if ($scope.manager === 'comments') {
 			console.log('pin click event while comments toggled', pinId);
 			$scope.selectedPin = pinId;
-			fetchPins();
+			// fetchPins();
+			// fetchComments();
 		}
 	};
 
@@ -109,6 +151,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 			console.log('new comment data', dataFromAddComment);
 			$scope.newComment.commenter_uid = UserFactory.getUser();
 			$scope.newComment.description = '';
+			// fetchPins();
 			fetchComments();
 		})
 		.catch((err) => {
@@ -121,6 +164,7 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 		CommentFactory.deleteComment(commentId, userToken)
 		.then((dataFromDeleteComment) => {
 			console.log('a comment was deleted', dataFromDeleteComment);
+			// fetchPins();
 			fetchComments();
 		})
 		.catch((err) => {
@@ -129,13 +173,15 @@ pushPinApp.controller('ProjectManageController', function($scope, $window, $rout
 	};
 
 	$scope.deletePin = (pinId) => {
+		console.log('userToken', userToken);
 		CommentFactory.deletePinComments(pinId, userToken)
 		.then((dataFromDeletePinComments) => {
-			return PinFactory.deletePin(pinId);
+			return PinFactory.deletePin(pinId, userToken);
 		})
 		.then((dataFromDeletePin) => {
 			console.log('dataFromDeletePin', dataFromDeletePin);
 			fetchPins();
+			// fetchComments();
 		})
 		.catch((err) => {
 			console.log('deletePinComments factory method issue', err);

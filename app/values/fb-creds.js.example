@@ -1,0 +1,7 @@
+'use strict';
+
+pushPinApp.constant('FBCreds', {
+  apiKey: "INSERT YOUR API KEY HERE",
+  authDomain: "INSERT YOUR AUTH DOMAIN HERE",
+  storageBucket: "INSERT YOUR STORAGE BUCKET HERE"
+});

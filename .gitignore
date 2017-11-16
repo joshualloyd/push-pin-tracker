@@ -4,3 +4,7 @@ css/
 lib/.sass-cache
 app/values/fb-creds.js
 test.html
+.firebaserc
+database.rules.json
+firebase.json
+storage.rules
